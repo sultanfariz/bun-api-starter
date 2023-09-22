@@ -9,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@prisma/client": "5.3.1",
     "@types/compression": "^1.7.3",
     "@types/cookie-parser": "^1.4.4",
     "@types/cors": "^2.8.14",
@@ -24,6 +25,7 @@
     "helmet": "^7.0.0",
     "morgan": "^1.10.0",
     "mysql2": "^3.6.1",
+    "prisma": "^5.3.1",
     "sequelize": "^6.33.0"
   }
 }
