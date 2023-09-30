@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import app from './app';
-import config from './infrastructure/repository/mysql/drivers';
-import { Sequelize } from 'sequelize';
+import {PrismaClient} from "@prisma/client";
+const prisma = new PrismaClient();
 
 dotenv.config();
 
@@ -15,14 +15,8 @@ function normalizePort(port: string | undefined): number {
 }
 
 try {
-  const sequelize = config as Sequelize;
-
-  sequelize.authenticate().then(() => {
-    console.log('Connection has been established successfully.');
-
-    const port = normalizePort(process.env.PORT);
-    app.listen(port, () => console.log(`Application running on port ${port}`));
-  });
+  const port = normalizePort(process.env.PORT);
+  app.listen(port, () => console.log(`Application running on port ${port}`));
 } catch (error) {
   console.error('Unable to connect to the database:', error);
 }

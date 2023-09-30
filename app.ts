@@ -5,7 +5,7 @@ import compression from "compression";
 import cors from "cors";
 import morgan from "morgan";
 
-// import authRoutes from "./routes/authRoutes";
+import authRoutes from "./routes/authRoutes";
 
 const app = express();
 
@@ -20,6 +20,6 @@ app.use(cors());
 app.options('*', cors());
 
 // App routes
-// app.use('/api/v1', authRoutes);
+app.use('/api/v1', authRoutes);
 
 export default app;
