@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { Request, Response } from 'express';
+import { insertUser, getUserByEmail } from '../infrastructure/repository/prisma/user/repository';
 
-const register = async (req: any, res: any) => {
+const register = async (req: Request, res: Response) => {
     try {
         const {
             email,
@@ -9,16 +9,25 @@ const register = async (req: any, res: any) => {
             name,
         } = req.body;
 
+        const user = await getUserByEmail(email);
+        
+        if (user) {
+            return res.status(409).json({
+                code: 409,
+                success: false,
+                message: 'User already exist!',
+                content: null
+            });
+        }
+
         const data = {
-            email,
+            email: email,
             password,
             name,
             photoUrl: "https://eu.ui-avatars.com/api/?name=" + name.replace(/\s/g, '+') + "&size=250"
         };
 
-        const createdUser = await prisma.user.create({
-            data: data,
-        });
+        const createdUser = await insertUser(data);
 
         return res.status(200).json({
             code: 200,
@@ -34,18 +43,14 @@ const register = async (req: any, res: any) => {
     }
 };
 
-const login = async (req: any, res: any) => {
+const login = async (req: Request, res: Response) => {
     try {
         const {
             email,
             password,
         } = req.body;
         
-        const user = await prisma.user.findUnique({
-            where: {
-                email: email,
-            },
-        });
+        const user = await getUserByEmail(email);
 
         if (!user) {
             return res.status(404).json({
