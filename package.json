@@ -1,15 +1,20 @@
 {
-  "name": "nodejs-be-starter",
+  "name": "bun-be-starter",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "prettier": "prettier --check \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
   "devDependencies": {
+    "@types/prettier": "^3.0.0",
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@prisma/client": "5.3.1",
+    "@prisma/client": "^5.4.2",
     "@types/compression": "^1.7.3",
     "@types/cookie-parser": "^1.4.4",
     "@types/cors": "^2.8.14",

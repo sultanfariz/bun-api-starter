@@ -5,8 +5,6 @@ type User = {
   password: string;
   name: string | null;
   photoUrl: string | null;
-}
+};
 
-export {
-  User
-}
+export { User };
