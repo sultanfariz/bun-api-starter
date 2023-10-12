@@ -3,24 +3,20 @@ import {
   insertUser,
   getUserByEmail,
 } from '../infrastructure/repository/prisma/user/repository';
+import { response, exceptionResponse } from '../infrastructure/commons/response';
+import { DuplicatedDataError, UnauthorizedError } from '../infrastructure/commons/exceptions';
 
 const register = async (req: Request, res: Response) => {
   try {
     const { email, password, name } = req.body;
 
     const user = await getUserByEmail(email);
-
     if (user) {
-      return res.status(409).json({
-        code: 409,
-        success: false,
-        message: 'User already exist!',
-        content: null,
-      });
+      throw new DuplicatedDataError('User already exist!');
     }
 
     const data = {
-      email: email,
+      email,
       password,
       name,
       photoUrl:
@@ -31,16 +27,14 @@ const register = async (req: Request, res: Response) => {
 
     const createdUser = await insertUser(data);
 
-    return res.status(200).json({
-      code: 200,
+    return response(res, {
+      code: 201,
       success: true,
-      message: 'Successfully register user!',
+      message: 'Successfully create user!',
       content: createdUser,
     });
   } catch (error: any) {
-    res.status(500).json({
-      message: error.message,
-    });
+    return exceptionResponse(res, error);
   }
 };
 
@@ -49,23 +43,11 @@ const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     const user = await getUserByEmail(email);
-
     if (!user) {
-      return res.status(404).json({
-        code: 404,
-        success: false,
-        message: 'User not found!',
-        content: null,
-      });
+      throw new UnauthorizedError('Email or password is incorrect!');
     }
-
     if (user.password !== password) {
-      return res.status(401).json({
-        code: 401,
-        success: false,
-        message: 'Wrong password!',
-        content: null,
-      });
+      throw new UnauthorizedError('Email or password is incorrect!');
     }
 
     return res.status(200).json({
@@ -75,9 +57,7 @@ const login = async (req: Request, res: Response) => {
       content: user,
     });
   } catch (error: any) {
-    res.status(500).json({
-      message: error.message,
-    });
+    return exceptionResponse(res, error);
   }
 };
 
