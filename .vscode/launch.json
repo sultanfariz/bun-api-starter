@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "bun",
+      "request": "launch",
+      "name": "Bun-API-Starter: Launch Program",
+      "program": "${workspaceFolder}/index.ts", // Update this with your entry file
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "env": {},
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}
