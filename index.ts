@@ -1,7 +1,5 @@
 import * as dotenv from 'dotenv';
 import app from './src/app';
-import {PrismaClient} from "@prisma/client";
-const prisma = new PrismaClient();
 
 dotenv.config();
 
@@ -18,5 +16,5 @@ try {
   const port = normalizePort(process.env.PORT);
   app.listen(port, () => console.log(`Application running on port ${port}`));
 } catch (error) {
-  console.error('Unable to connect to the database:', error);
+  console.error('Unable to start the server!', error);
 }

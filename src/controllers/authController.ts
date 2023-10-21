@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import {
   insertUser,
   getUserByEmail,
@@ -17,7 +18,7 @@ const register = async (req: Request, res: Response) => {
 
     const data = {
       email,
-      password,
+      password: await Bun.password.hash(password),
       name,
       photoUrl:
         'https://eu.ui-avatars.com/api/?name=' +
@@ -46,15 +47,24 @@ const login = async (req: Request, res: Response) => {
     if (!user) {
       throw new UnauthorizedError('Email or password is incorrect!');
     }
-    if (user.password !== password) {
+    if (!await Bun.password.verify(password, user.password)) {
       throw new UnauthorizedError('Email or password is incorrect!');
     }
+
+    const payload = {
+      id: user.id,
+      name: user.name,
+    };
+    
+    let accessToken = jwt.sign(payload, process.env.TOKEN || '', {
+      expiresIn: process.env.TOKEN_EXPIRED,
+    });
 
     return res.status(200).json({
       code: 200,
       success: true,
       message: 'Successfully login user!',
-      content: user,
+      content: accessToken,
     });
   } catch (error: any) {
     return exceptionResponse(res, error);
