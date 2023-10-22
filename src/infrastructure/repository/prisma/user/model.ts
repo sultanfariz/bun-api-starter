@@ -5,6 +5,7 @@ type User = {
   password: string;
   name: string | null;
   photoUrl: string | null;
+  role: string;
 };
 
 export { User };

@@ -5,6 +5,7 @@ CREATE TABLE `User` (
     `name` VARCHAR(191) NULL,
     `password` VARCHAR(191) NOT NULL,
     `photoUrl` VARCHAR(191) NULL,
+    `role` VARCHAR(191) NOT NULL DEFAULT 'USER',
 
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)

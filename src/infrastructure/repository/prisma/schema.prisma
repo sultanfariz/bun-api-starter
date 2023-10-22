@@ -16,4 +16,5 @@ model User {
   name      String?
   password  String
   photoUrl  String?
+  role      String  @default("USER")
 }
