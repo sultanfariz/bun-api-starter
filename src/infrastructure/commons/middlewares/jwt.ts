@@ -4,7 +4,7 @@ import { response } from '../response';
 import { Request, Response, NextFunction } from 'express';
 
 interface CustomRequest extends Request {
- user: string | undefined;
+  user: string | undefined;
 }
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,10 +17,12 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 
     jwt.verify(token, process.env.TOKEN || '', (err, decoded) => {
       if (err) {
-        throw new UnauthorizedError('Your token does not match our credentials');
+        throw new UnauthorizedError(
+          'Your token does not match our credentials'
+        );
       }
       if (decoded) {
-        res.locals.user = {
+        res.locals = {
           user: decoded,
         };
       }

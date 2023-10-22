@@ -15,6 +15,21 @@ const insertUser = async (data: any) => {
   }
 };
 
+const updateUser = async (id: number, data: any) => {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: data,
+    });
+
+    return updatedUser;
+  } catch (error: any) {
+    throw error;
+  }
+};
+
 const getUserByEmail = async (email: string) => {
   try {
     const user = await prisma.user.findUnique({
@@ -29,4 +44,4 @@ const getUserByEmail = async (email: string) => {
   }
 };
 
-export { insertUser, getUserByEmail };
+export { insertUser, updateUser, getUserByEmail };
