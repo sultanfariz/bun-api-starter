@@ -1,10 +1,7 @@
 import express from 'express';
-import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import compression from 'compression';
 import cors from 'cors';
 import morgan from 'morgan';
-
 import authRoutes from './routes/authRoutes';
 
 const app = express();
