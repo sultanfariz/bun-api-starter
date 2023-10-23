@@ -48,7 +48,7 @@ const exceptionResponse = (res: Response, error: Error) => {
     return response(res, {
       code: 409,
       success: false,
-      message: 'Employee already exists!'
+      message: 'Employee already exists!',
     });
 
   return response(res, {
