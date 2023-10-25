@@ -1,4 +1,5 @@
 const { Router } = require('express');
+import { insertAdmin } from '../controllers/adminController';
 import {
   register,
   login,
@@ -18,5 +19,6 @@ router.post(
   uploadFile().single('image'),
   addProfilePhoto
 );
+router.post('/admin', auth, insertAdmin);
 
 export default router;
