@@ -10,6 +10,7 @@
       "cwd": "${workspaceFolder}",
       "stopOnEntry": false,
       "env": {},
+      "preLaunchTask": "prettier-format",
       "internalConsoleOptions": "openOnSessionStart"
     }
   ]

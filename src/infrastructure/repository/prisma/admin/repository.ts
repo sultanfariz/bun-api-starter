@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 const insertAdmin = async (data: any) => {
   try {
-    const createdAdmin = await prisma.user.create({
+    const createdAdmin = await prisma.admin.create({
       data: data,
     });
 
@@ -15,7 +15,7 @@ const insertAdmin = async (data: any) => {
 
 const updateAdmin = async (id: number, data: any) => {
   try {
-    const updatedAdmin = await prisma.user.update({
+    const updatedAdmin = await prisma.admin.update({
       where: {
         id: id,
       },
@@ -40,6 +40,6 @@ const getAdminByUserId = async (userId: number) => {
   } catch (error: any) {
     throw error;
   }
-}
+};
 
 export { insertAdmin, updateAdmin, getAdminByUserId };

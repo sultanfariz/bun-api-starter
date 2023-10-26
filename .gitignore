@@ -170,3 +170,4 @@ dist
 
 /public
 .cli
+api-*.json
