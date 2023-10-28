@@ -1,17 +1,11 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-import {
-  insertUser,
-  getUserByEmail,
-} from '../infrastructure/repository/prisma/user/repository';
-import { insertAdmin as insertAdminRepository } from '../infrastructure/repository/prisma/admin/repository';
+import prisma from '../infrastructure/repository/prisma/driver';
+import { getUserByEmail } from '../infrastructure/repository/prisma/user/repository';
 import {
   response,
   exceptionResponse,
 } from '../infrastructure/commons/response';
 import { DuplicatedDataError } from '../infrastructure/commons/exceptions';
-
-const prisma = new PrismaClient();
 
 const insertAdmin = async (req: Request, res: Response) => {
   try {
@@ -33,13 +27,17 @@ const insertAdmin = async (req: Request, res: Response) => {
           '&size=250',
       };
 
-      const createdUser = await insertUser(userData);
+      const createdUser = await tx.user.create({
+        data: userData,
+      });
 
       const adminData = {
         userId: createdUser.id,
       };
 
-      const createdAdmin = await insertAdminRepository(adminData);
+      const createdAdmin = await tx.admin.create({
+        data: adminData,
+      });
 
       return response(res, {
         code: 201,
