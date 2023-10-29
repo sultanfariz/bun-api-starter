@@ -1,4 +1,12 @@
 import { Response } from 'express';
+import {
+  NotFoundError,
+  DuplicatedDataError,
+  ForbiddenAccessError,
+  UnauthorizedError,
+  UnprocessableEntityError,
+  CustomError,
+} from './exceptions';
 
 type ResponseDTO = {
   code: number;
@@ -16,45 +24,34 @@ const response = (res: Response, data: ResponseDTO) => {
   });
 };
 
-const exceptionResponse = (res: Response, error: Error) => {
-  if (error.name === 'NotFoundError')
-    return response(res, {
-      code: 404,
-      success: false,
-      message: error.message,
-    });
+const exceptionResponse = (res: Response, error: CustomError) => {
+  let code = 200;
 
-  if (error.name === 'DuplicatedDataError')
-    return response(res, {
-      code: 409,
-      success: false,
-      message: error.message,
-    });
-
-  if (error.name === 'UnprocessableEntityError')
-    return response(res, {
-      code: 422,
-      success: false,
-      message: error.message,
-    });
-
-  if (error.name === 'UnauthorizedError')
-    return response(res, {
-      code: 401,
-      success: false,
-      message: error.message,
-    });
-  if (error.message === 'Validation error')
-    return response(res, {
-      code: 409,
-      success: false,
-      message: 'Employee already exists!',
-    });
+  switch (error.constructor) {
+    case UnauthorizedError:
+      code = 401;
+      break;
+    case ForbiddenAccessError:
+      code = 403;
+      break;
+    case NotFoundError:
+      code = 404;
+      break;
+    case DuplicatedDataError:
+      code = 409;
+      break;
+    case UnprocessableEntityError:
+      code = 422;
+      break;
+    default:
+      code = 500;
+  }
 
   return response(res, {
-    code: 500,
+    code,
     success: false,
     message: error.message || 'Something went wrong!',
+    content: error.content,
   });
 };
 

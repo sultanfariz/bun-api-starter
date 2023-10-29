@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { Secret } from 'jsonwebtoken';
-import { NotFoundError, UnauthorizedError } from '../exceptions';
+import jwt from 'jsonwebtoken';
+import {
+  NotFoundError,
+  ForbiddenAccessError,
+  UnauthorizedError,
+} from '../exceptions';
 import { exceptionResponse } from '../response';
 
 interface CustomRequest extends Request {
@@ -38,7 +42,7 @@ const verifyRole = (roles: string[]) => {
     try {
       const role = res.locals.user?.role;
       if (roles.includes(role)) return next();
-      else throw new UnauthorizedError('Unauthorized');
+      else throw new ForbiddenAccessError('Unauthorized');
     } catch (error: any) {
       exceptionResponse(res, error);
     }

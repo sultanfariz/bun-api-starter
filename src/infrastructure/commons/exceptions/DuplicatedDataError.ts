@@ -1,7 +1,13 @@
-class DuplicatedDataError extends Error {
-  constructor(message?: string) {
+import { CustomError } from '.';
+
+class DuplicatedDataError extends CustomError {
+  constructor(
+    message?: string,
+    public content?: any
+  ) {
     super(message || 'The data is already in the database!');
     this.name = 'DuplicatedDataError';
+    this.content = content;
 
     // Restore prototype chain
     Object.setPrototypeOf(this, DuplicatedDataError.prototype);
