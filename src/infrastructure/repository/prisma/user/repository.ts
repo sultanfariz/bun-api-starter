@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { User } from './model';
 
 const prisma = new PrismaClient();
 
@@ -30,6 +29,24 @@ const updateUser = async (id: number, data: any) => {
   }
 };
 
+const getUsers = async () => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        photoUrl: true,
+        role: true,
+      },
+    });
+
+    return users;
+  } catch (error: any) {
+    throw error;
+  }
+};
+
 const getUserByEmail = async (email: string) => {
   try {
     const user = await prisma.user.findUnique({
@@ -44,4 +61,4 @@ const getUserByEmail = async (email: string) => {
   }
 };
 
-export { insertUser, updateUser, getUserByEmail };
+export { insertUser, updateUser, getUsers, getUserByEmail };

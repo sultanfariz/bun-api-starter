@@ -2,7 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import authRoutes from './routes/authRoutes';
+import authRoutes from './routes/routes';
 
 const app = express();
 

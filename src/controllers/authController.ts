@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import {
-  insertUser,
   getUserByEmail,
   updateUser,
 } from '../infrastructure/repository/prisma/user/repository';
+import {
+  updateAdmin,
+  getAdminByUserId,
+} from '../infrastructure/repository/prisma/admin/repository';
+import * as userSheet from '../infrastructure/repository/gsheet/user/repository';
+import prisma from '../infrastructure/repository/prisma/driver';
 import {
   response,
   exceptionResponse,
@@ -12,36 +17,47 @@ import {
 import {
   DuplicatedDataError,
   UnauthorizedError,
-  NotFoundError,
   UnprocessableEntityError,
 } from '../infrastructure/commons/exceptions';
 
 const register = async (req: Request, res: Response) => {
   try {
-    const { email, password, name } = req.body;
+    return await prisma.$transaction(async (tx) => {
+      const { email, password, name } = req.body;
 
-    const user = await getUserByEmail(email);
-    if (user) {
-      throw new DuplicatedDataError('User already exist!');
-    }
+      const user = await getUserByEmail(email);
+      if (user) {
+        throw new DuplicatedDataError('User already exist!');
+      }
 
-    const data = {
-      email,
-      password: await Bun.password.hash(password),
-      name,
-      photoUrl:
-        'https://eu.ui-avatars.com/api/?name=' +
-        name.replace(/\s/g, '+') +
-        '&size=250',
-    };
+      const data = {
+        email,
+        password: await Bun.password.hash(password),
+        name,
+        photoUrl:
+          'https://eu.ui-avatars.com/api/?name=' +
+          name.replace(/\s/g, '+') +
+          '&size=250',
+      };
 
-    const createdUser = await insertUser(data);
+      const createdUser = await tx.user.create({
+        data,
+      });
 
-    return response(res, {
-      code: 201,
-      success: true,
-      message: 'Successfully create user!',
-      content: createdUser,
+      await userSheet.insertUser({
+        id: createdUser.id,
+        email: createdUser.email,
+        name: createdUser.name || '',
+        photoUrl: createdUser.photoUrl || '',
+        role: createdUser.role,
+      });
+
+      return response(res, {
+        code: 201,
+        success: true,
+        message: 'Successfully create user!',
+        content: createdUser,
+      });
     });
   } catch (error: any) {
     return exceptionResponse(res, error);
@@ -70,6 +86,23 @@ const login = async (req: Request, res: Response) => {
     let accessToken = jwt.sign(payload, process.env.TOKEN || '', {
       expiresIn: process.env.TOKEN_EXPIRED,
     });
+
+    if (user.role === 'ADMIN') {
+      const admin = await getAdminByUserId(user.id);
+      if (!admin) {
+        throw new UnauthorizedError('Email or password is incorrect!');
+      }
+
+      await updateAdmin(admin.id, {
+        lastLogin: new Date(),
+      });
+
+      if (admin) {
+        accessToken = jwt.sign(payload, process.env.TOKEN || '', {
+          expiresIn: process.env.TOKEN_EXPIRED,
+        });
+      }
+    }
 
     return res.status(200).json({
       code: 200,
