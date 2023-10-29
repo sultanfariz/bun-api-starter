@@ -65,6 +65,8 @@ const register = async (req: Request, res: Response) => {
 };
 
 const login = async (req: Request, res: Response) => {
+  let roleStr = 'user';
+
   try {
     const { email, password } = req.body;
 
@@ -101,13 +103,14 @@ const login = async (req: Request, res: Response) => {
         accessToken = jwt.sign(payload, process.env.TOKEN || '', {
           expiresIn: process.env.TOKEN_EXPIRED,
         });
+        roleStr = 'admin';
       }
     }
 
     return res.status(200).json({
       code: 200,
       success: true,
-      message: 'Successfully login user!',
+      message: `Successfully login ${roleStr}!`,
       content: accessToken,
     });
   } catch (error: any) {
