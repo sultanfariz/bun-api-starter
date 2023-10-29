@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../infrastructure/repository/prisma/driver';
+import prisma, { Role } from '../infrastructure/repository/prisma/driver';
 import { getUserByEmail } from '../infrastructure/repository/prisma/user/repository';
 import {
   response,
@@ -25,6 +25,7 @@ const insertAdmin = async (req: Request, res: Response) => {
           'https://eu.ui-avatars.com/api/?name=' +
           name.replace(/\s/g, '+') +
           '&size=250',
+        role: Role.ADMIN,
       };
 
       const createdUser = await tx.user.create({
