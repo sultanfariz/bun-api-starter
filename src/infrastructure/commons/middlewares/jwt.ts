@@ -1,7 +1,7 @@
+import { Request, Response, NextFunction } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
 import { NotFoundError, UnauthorizedError } from '../exceptions';
-import { response } from '../response';
-import { Request, Response, NextFunction } from 'express';
+import { exceptionResponse } from '../response';
 
 interface CustomRequest extends Request {
   user: string | undefined;
@@ -28,40 +28,19 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
       }
     });
   } catch (error: any) {
-    if (error.name === 'NotFoundError')
-      return response(res, {
-        code: 404,
-        success: false,
-        message: error.message,
-      });
-
-    if (error.name === 'WrongIdentityError')
-      return response(res, {
-        code: 403,
-        success: false,
-        message: error.message,
-      });
-
-    return response(res, {
-      code: 500,
-      success: false,
-      message: error.message || 'Something went wrong!',
-    });
+    exceptionResponse(res, error);
   }
   return next();
 };
 
 const verifyRole = (roles: string[]) => {
   return (req: CustomRequest, res: Response, next: NextFunction) => {
-    const role = res.locals.user?.role;
-    if (roles.includes(role)) {
-      return next();
-    } else {
-      return response(res, {
-        code: 403,
-        success: false,
-        message: 'You are not authorized to access this resource',
-      });
+    try {
+      const role = res.locals.user?.role;
+      if (roles.includes(role)) return next();
+      else throw new UnauthorizedError('Unauthorized');
+    } catch (error: any) {
+      exceptionResponse(res, error);
     }
   };
 };

@@ -1,6 +1,6 @@
 class UnauthorizedError extends Error {
   constructor(message?: string) {
-    super(message || 'You are not allowed to access this resource!');
+    super(message || 'You need to login to access this resource!');
     this.name = 'UnauthorizedError';
 
     // Restore prototype chain
