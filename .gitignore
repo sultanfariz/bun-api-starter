@@ -171,3 +171,4 @@ dist
 /public
 .cli
 api-*.json
+infrastructure/repository/prisma/migrations
