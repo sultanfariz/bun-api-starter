@@ -17,7 +17,7 @@ type ResponseDTO = {
 
 const response = (res: Response, data: ResponseDTO) => {
   return res.status(data.code).json({
-    code: data.code,
+    code: data.code || 200,
     success: data.success,
     message: data.message || '',
     content: data.content || null,
@@ -25,30 +25,8 @@ const response = (res: Response, data: ResponseDTO) => {
 };
 
 const exceptionResponse = (res: Response, error: CustomError) => {
-  let code = 200;
-
-  switch (error.constructor) {
-    case UnauthorizedError:
-      code = 401;
-      break;
-    case ForbiddenAccessError:
-      code = 403;
-      break;
-    case NotFoundError:
-      code = 404;
-      break;
-    case DuplicatedDataError:
-      code = 409;
-      break;
-    case UnprocessableEntityError:
-      code = 422;
-      break;
-    default:
-      code = 500;
-  }
-
   return response(res, {
-    code,
+    code: error.code || 500,
     success: false,
     message: error.message || 'Something went wrong!',
     content: error.content,

@@ -42,7 +42,10 @@ const verifyRole = (roles: string[]) => {
     try {
       const role = res.locals.user?.role;
       if (roles.includes(role)) return next();
-      else throw new ForbiddenAccessError('You are not allowed to access this resource!');
+      else
+        throw new ForbiddenAccessError(
+          'You are not allowed to access this resource!'
+        );
     } catch (error: any) {
       exceptionResponse(res, error);
     }

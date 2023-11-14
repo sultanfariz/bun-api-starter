@@ -5,7 +5,7 @@ class ForbiddenAccessError extends CustomError {
     message?: string,
     public content?: any
   ) {
-    super(message || 'You are not allowed to access this resource!');
+    super(403, message || 'You are not allowed to access this resource!');
     this.name = 'ForbiddenAccessError';
     this.content = content;
 

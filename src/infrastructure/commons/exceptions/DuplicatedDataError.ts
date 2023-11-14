@@ -5,7 +5,7 @@ class DuplicatedDataError extends CustomError {
     message?: string,
     public content?: any
   ) {
-    super(message || 'The data is already in the database!');
+    super(409, message || 'The data is already in the database!');
     this.name = 'DuplicatedDataError';
     this.content = content;
 

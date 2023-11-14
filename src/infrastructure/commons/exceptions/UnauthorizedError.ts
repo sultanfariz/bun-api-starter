@@ -5,7 +5,7 @@ class UnauthorizedError extends CustomError {
     message?: string,
     public content?: any
   ) {
-    super(message || 'You need to login to access this resource!');
+    super(401, message || 'You need to login to access this resource!');
     this.name = 'UnauthorizedError';
     this.content = content;
 

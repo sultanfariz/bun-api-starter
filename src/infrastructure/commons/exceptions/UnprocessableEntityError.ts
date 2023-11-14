@@ -5,7 +5,7 @@ class UnprocessableEntityError extends CustomError {
     message?: string,
     public content?: any
   ) {
-    super(message || 'Unprocessable Entity');
+    super(422, message || 'Unprocessable Entity');
     this.name = 'UnprocessableEntityError';
     this.content = content;
 

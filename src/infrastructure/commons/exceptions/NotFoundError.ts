@@ -5,7 +5,7 @@ class NotFoundError extends CustomError {
     message?: string,
     public content?: any
   ) {
-    super(message || 'Resources Not Found!');
+    super(404, message || 'Resources Not Found!');
     this.name = 'NotFoundError';
     this.content = content;
 

@@ -30,5 +30,4 @@ const loginSchema = z.object({
     .max(255),
 });
 
-
 export { userSchema, loginSchema };
